@@ -1,0 +1,6 @@
+package com.example.weather.domain.commands
+
+interface Command<out T> {
+
+    fun execute(): T
+}
