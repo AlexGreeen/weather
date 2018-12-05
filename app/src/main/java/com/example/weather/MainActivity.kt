@@ -5,10 +5,12 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import com.example.weather.adapters.ForecastListAdapter
-import com.example.weather.data.ForecastRequest
+import com.example.weather.domain.commands.RequestForecastCommand
+import com.example.weather.domain.model.ForecastList
+import org.jetbrains.anko.custom.async
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.find
-import org.jetbrains.anko.longToast
+import org.jetbrains.anko.toast
 import org.jetbrains.anko.uiThread
 
 class MainActivity : AppCompatActivity() {
@@ -23,6 +25,8 @@ class MainActivity : AppCompatActivity() {
         "Sun 6/29 - Sunny - 20/7"
     )
 
+    private lateinit var result: ForecastList
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,12 +34,12 @@ class MainActivity : AppCompatActivity() {
 
         val forecastList = find<RecyclerView>(R.id.forecast_list)
         forecastList.layoutManager = LinearLayoutManager(this)
-        forecastList.adapter = ForecastListAdapter(items)
-
 
         doAsync {
-            ForecastRequest("94043")
-            uiThread { longToast("ForecastRequest Performed") }
+            result = RequestForecastCommand("94043").execute()
+            uiThread {
+                forecastList.adapter = ForecastListAdapter(result)
+            }
         }
     }
 }

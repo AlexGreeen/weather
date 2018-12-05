@@ -10,33 +10,26 @@ import com.example.weather.domain.model.Forecast as ModelForecast
 
 class ForecastDataMapper {
 
-    fun convertFromDataModel(forecastResult: ForecastResult): ForecastList {
-        return ForecastList(
-            forecastResult.city.name,
-            forecastResult.city.country,
-            convertForecastListToDomain(forecastResult.list)
-        )
-    }
+    fun convertFromDataModel(forecast: ForecastResult): ForecastList =
+        ForecastList(forecast.city.name, forecast.city.country, convertForecastListToDomain(forecast.list))
 
     private fun convertForecastListToDomain(list: List<Forecast>): List<ModelForecast> {
-        return list.mapIndexed { index, forecast ->
-            val dt = Calendar.getInstance().timeInMillis + TimeUnit.DAYS.toMillis(index.toLong())
+        return list.mapIndexed { i, forecast ->
+            val dt = Calendar.getInstance().timeInMillis + TimeUnit.DAYS.toMillis(i.toLong())
             convertForecastItemToDomain(forecast.copy(dt = dt))
         }
-
     }
 
     private fun convertForecastItemToDomain(forecast: Forecast): ModelForecast {
         return ModelForecast(
             convertDate(forecast.dt),
             forecast.weather[0].description,
-            forecast.temperature.max.toInt(),
-            forecast.temperature.min.toInt()
-        )
+            forecast.temp.max.toInt(),
+            forecast.temp.min.toInt())
     }
 
     private fun convertDate(date: Long): String {
-        val dt = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.getDefault())
-        return dt.format(date)
+        val df = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.getDefault())
+        return df.format(date)
     }
 }
