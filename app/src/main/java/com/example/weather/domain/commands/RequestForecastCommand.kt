@@ -4,7 +4,7 @@ import com.example.weather.data.ForecastRequest
 import com.example.weather.domain.mappers.ForecastDataMapper
 import com.example.weather.domain.model.ForecastList
 
-class RequestForecastCommand(val zipCode: String): Command<ForecastList> {
+class RequestForecastCommand(private val zipCode: String): Command<ForecastList> {
 
     override fun execute(): ForecastList {
         val forecastRequest = ForecastRequest(zipCode)
